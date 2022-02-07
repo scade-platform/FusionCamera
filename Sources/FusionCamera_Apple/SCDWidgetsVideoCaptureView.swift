@@ -1,5 +1,6 @@
 import ScadeKit
 import AVFoundation
+import FusionCamera_Common
 
 public extension SCDWidgetsVideoCaptureView {
 
