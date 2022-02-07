@@ -15,9 +15,6 @@ class Camera: NSObject, CameraProtocol {
   }
 
   func setup(_ onSuccess: @escaping CameraProtocol.OnSuccess) {
-    guard let previewLayer = self.previewLayer,
-          let session = previewLayer.session else { return }
-
     self.onSuccess = onSuccess
   }
 }
