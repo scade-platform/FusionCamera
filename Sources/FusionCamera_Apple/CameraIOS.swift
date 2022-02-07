@@ -7,13 +7,13 @@ class Camera: NSObject, CameraProtocol, AVCaptureMetadataOutputObjectsDelegate {
 
   weak var previewLayer: AVCaptureVideoPreviewLayer?
 
-  private var onSuccess: OnSuccess?
+  private var onSuccess: CameraProtocol.OnSuccess?
 
   init(previewLayer: AVCaptureVideoPreviewLayer) {
     self.previewLayer = previewLayer
   }
 
-  func setup(_ onSuccess: @escaping OnSuccess) {
+  func setup(_ onSuccess: @escaping CameraProtocol.OnSuccess) {
     guard let previewLayer = self.previewLayer,
           let session = previewLayer.session else { return }
 
