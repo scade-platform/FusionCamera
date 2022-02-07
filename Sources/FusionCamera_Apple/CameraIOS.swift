@@ -1,11 +1,9 @@
 import ScadeKit
 import AVFoundation
 
-#if os(macOS)
-class Camera: NSObject, CameraProtocol {
-#elseif os(iOS)
+#if os(iOS)
+
 class Camera: NSObject, CameraProtocol, AVCaptureMetadataOutputObjectsDelegate {
-#endif
 
   weak var previewLayer: AVCaptureVideoPreviewLayer?
 
@@ -21,17 +19,13 @@ class Camera: NSObject, CameraProtocol, AVCaptureMetadataOutputObjectsDelegate {
 
     self.onSuccess = onSuccess
 
-#if os(iOS)
     let output = AVCaptureMetadataOutput()
     session.addOutput(output)
     
     output.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
     output.metadataObjectTypes = [AVMetadataObject.ObjectType.qr]
-#endif
-
   }
 
-#if os(iOS)
   func metadataOutput(_ output: AVCaptureMetadataOutput,
                       didOutput metadataObjects: [AVMetadataObject],
                       from connection: AVCaptureConnection) {
@@ -43,5 +37,7 @@ class Camera: NSObject, CameraProtocol, AVCaptureMetadataOutputObjectsDelegate {
       onSuccess(qrCode)
     }
   }
-#endif
 }
+
+
+#endif
