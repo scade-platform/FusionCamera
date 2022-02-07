@@ -23,7 +23,11 @@ let package = Package(
               .target(name: "FusionCamera_Common"),              
               .target(name: "FusionCamera_Apple", condition: .when(platforms: [.iOS, .macOS])),
               //.target(name: "FusionCamera_Android", condition: .when(platforms: [.android])),
-            ]            
+            ],
+            swiftSettings: [
+                .unsafeFlags(["-F", SCADE_SDK], .when(platforms: [.macOS, .iOS])),
+                .unsafeFlags(["-I", "\(SCADE_SDK)/include"], .when(platforms: [.android])),
+            ]
         ),
         .target(
             name: "FusionCamera_Common"

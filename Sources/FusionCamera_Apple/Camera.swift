@@ -1,9 +1,7 @@
 import AVFoundation
 import FusionCamera_Common
 
-#if os(iOS)
-
-class Camera: NSObject, CameraProtocol, AVCaptureMetadataOutputObjectsDelegate {
+class Camera: NSObject {
 
   weak var previewLayer: AVCaptureVideoPreviewLayer?
 
@@ -12,6 +10,9 @@ class Camera: NSObject, CameraProtocol, AVCaptureMetadataOutputObjectsDelegate {
   init(previewLayer: AVCaptureVideoPreviewLayer) {
     self.previewLayer = previewLayer
   }
+}
+
+extension Camera: CameraProtocol {
 
   func setup(_ onSuccess: @escaping CameraProtocol.OnSuccess) {
     guard let previewLayer = self.previewLayer,
@@ -19,12 +20,18 @@ class Camera: NSObject, CameraProtocol, AVCaptureMetadataOutputObjectsDelegate {
 
     self.onSuccess = onSuccess
 
+#if os(iOS)
     let output = AVCaptureMetadataOutput()
     session.addOutput(output)
     
     output.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
     output.metadataObjectTypes = [AVMetadataObject.ObjectType.qr]
+#endif
   }
+}
+
+#if os(iOS)
+extension Camera: AVCaptureMetadataOutputObjectsDelegate {
 
   func metadataOutput(_ output: AVCaptureMetadataOutput,
                       didOutput metadataObjects: [AVMetadataObject],
@@ -38,6 +45,4 @@ class Camera: NSObject, CameraProtocol, AVCaptureMetadataOutputObjectsDelegate {
     }
   }
 }
-
-
 #endif
