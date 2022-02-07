@@ -7,7 +7,7 @@ let SCADE_SDK = ProcessInfo.processInfo.environment["SCADE_SDK"] ?? ""
 
 let package = Package(
     name: "FusionCamera",
-    platforms: [.macOS(.v10_14), .iOS(.v13)],
+    platforms: [.macOS(.v10_15), .iOS(.v13)],
     products: [
         .library(
             name: "FusionCamera",
