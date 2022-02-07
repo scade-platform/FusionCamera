@@ -11,7 +11,7 @@ public extension SCDWidgetsVideoCaptureView {
 #endif
 
   var camera: CameraProtocol? {
-    guard let ptr:UnsafeRawPointer = self.ptr,
+    guard let ptr = self.ptr,
           let view = Unmanaged<AnyObject>.fromOpaque(ptr).takeUnretainedValue() as? NativeView,
           let previewLayer =
             view.layer.sublayers?.first(where: {$0 is AVCaptureVideoPreviewLayer}) as? AVCaptureVideoPreviewLayer
