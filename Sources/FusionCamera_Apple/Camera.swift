@@ -45,8 +45,8 @@ extension Camera: AVCaptureMetadataOutputObjectsDelegate {
        let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
        object.type == AVMetadataObject.ObjectType.qr,
        let qrCode = object.stringValue,
-       case let .qrCode(onSuccess) = self.captureOutput {
-      onSuccess(qrCode)
+       case let .qrCode(handler) = self.captureOutput {
+      handler(qrCode)
     }
   }
 }
