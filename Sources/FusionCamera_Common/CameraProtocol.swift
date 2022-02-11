@@ -1,5 +1,10 @@
+public enum CaptureOutput {
+  
+  case qrCode(onSuccess: CameraProtocol.OnSuccess)
+}
+
 public protocol CameraProtocol {
   typealias OnSuccess = (String) -> Void
 
-  func setup(_ onSuccess: @escaping OnSuccess)
+  func registerCaptureOutput(_ output: CaptureOutput)
 }

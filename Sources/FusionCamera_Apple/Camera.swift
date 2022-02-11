@@ -5,7 +5,7 @@ class Camera: NSObject {
 
   weak var previewLayer: AVCaptureVideoPreviewLayer?
 
-  private var onSuccess: CameraProtocol.OnSuccess?
+  private var captureOutput: CaptureOutput?
 
   init(previewLayer: AVCaptureVideoPreviewLayer) {
     self.previewLayer = previewLayer
@@ -14,12 +14,18 @@ class Camera: NSObject {
 
 extension Camera: CameraProtocol {
 
-  func setup(_ onSuccess: @escaping CameraProtocol.OnSuccess) {
+  func registerCaptureOutput(_ output: CaptureOutput) {
+    self.captureOutput = output
+
+    switch output {
+    case .qrCode:
+      registerQRCodeCaptureOutput()
+    }
+  }
+
+  private func registerQRCodeCaptureOutput() {
     guard let previewLayer = self.previewLayer,
           let session = previewLayer.session else { return }
-
-    self.onSuccess = onSuccess
-
 #if os(iOS)
     let output = AVCaptureMetadataOutput()
     session.addOutput(output)
@@ -32,7 +38,6 @@ extension Camera: CameraProtocol {
 
 #if os(iOS)
 extension Camera: AVCaptureMetadataOutputObjectsDelegate {
-
   func metadataOutput(_ output: AVCaptureMetadataOutput,
                       didOutput metadataObjects: [AVMetadataObject],
                       from connection: AVCaptureConnection) {
@@ -40,7 +45,7 @@ extension Camera: AVCaptureMetadataOutputObjectsDelegate {
        let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
        object.type == AVMetadataObject.ObjectType.qr,
        let qrCode = object.stringValue,
-       let onSuccess = self.onSuccess {
+       case let .qrCode(onSuccess) = self.captureOutput {
       onSuccess(qrCode)
     }
   }
