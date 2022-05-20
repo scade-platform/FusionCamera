@@ -7,8 +7,48 @@ class Camera: NSObject {
 
   private var captureOutput: CaptureOutput?
 
+  private var borderLayer: CAShapeLayer?
+
+  private var resetTimer: Timer?
+
   init(previewLayer: AVCaptureVideoPreviewLayer) {
     self.previewLayer = previewLayer
+
+    let borderLayer = CAShapeLayer()
+    borderLayer.lineWidth = 2.0
+    borderLayer.strokeColor = UIColor.green.cgColor
+    borderLayer.fillColor = UIColor.clear.cgColor
+    borderLayer.frame = previewLayer.bounds
+    borderLayer.isHidden = true
+
+    self.borderLayer = borderLayer
+    self.previewLayer?.addSublayer(borderLayer)
+  }
+
+  private func updateBorder(_ points: [CGPoint]) {
+    guard !points.isEmpty else { return }
+
+    let path = CGMutablePath()
+    for (index, point) in points.enumerated() {
+      if index == 0 {
+        path.move(to: point)
+      }
+      else {
+        path.addLine(to: point)
+      }
+    }
+    path.closeSubpath()
+
+    self.borderLayer?.path = path
+    self.borderLayer?.isHidden = false
+  }
+
+  private func hideBorder(after: Double) {
+    self.resetTimer?.invalidate()
+    self.resetTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval() + after,
+                                           repeats: false) { [weak self] (timer) in
+      self?.borderLayer?.isHidden = true
+    }
   }
 }
 
@@ -47,6 +87,12 @@ extension Camera: AVCaptureMetadataOutputObjectsDelegate {
        let qrCode = object.stringValue,
        case let .qrCode(handler) = self.captureOutput {
       handler(qrCode)
+
+      if let transformedObject =
+           previewLayer?.transformedMetadataObject(for: object) as? AVMetadataMachineReadableCodeObject {
+        updateBorder(transformedObject.corners)
+        hideBorder(after: 0.25)
+      }
     }
   }
 }
