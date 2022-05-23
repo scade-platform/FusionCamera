@@ -1,6 +1,14 @@
 import AVFoundation
 import FusionCamera_Common
 
+#if os(iOS)
+import UIKit
+typealias NativeColor = UIColor
+#else
+import AppKit
+typealias NativeColor = NSColor
+#endif
+
 class Camera: NSObject {
 
   weak var previewLayer: AVCaptureVideoPreviewLayer?
@@ -16,8 +24,8 @@ class Camera: NSObject {
 
     let borderLayer = CAShapeLayer()
     borderLayer.lineWidth = 2.0
-    borderLayer.strokeColor = UIColor.green.cgColor
-    borderLayer.fillColor = UIColor.clear.cgColor
+    borderLayer.strokeColor = NativeColor.green.cgColor
+    borderLayer.fillColor = NativeColor.clear.cgColor
     borderLayer.frame = previewLayer.bounds
     borderLayer.isHidden = true
 
